@@ -1,40 +1,27 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import "../assets/styles/TheoDoiCongTacKDDV.css";
 import { DynamicTable } from "../components";
 import { Form, GroupItem, SimpleItem } from "devextreme-react/form";
 
-const EXAMPLE_DATA = {
-  tenChuCoSo: "",
-  soCmnd: "",
-  soDienThoai: "",
-  soGiayPhep: "",
-  tinhThanh: "",
-  xaPhuong: "",
-  thonAp: "",
-  diaChi: "",
-  maCoSo: "",
-  tenCoSo: "",
-  ngayCapGiayPhep: null,
-  tongSoNhaYen: "",
-  tongDienTich: "",
-  sanLuong: "",
-  ghiChu: "",
-  phuongDiaDiem: "",
-  diaChiDiaDiem: "",
-  viDo: 10.786793622305948,
-  kinhDo: 106.69344513965149,
-  kiemdich: [],
-  diaChiNoiDen: [],
-};
+const RenderThongTinChung = ({
+  data,
+  onChange,
+}: {
+  data: any;
+  onChange: (data: any) => void;
+}) => {
+  const handleFieldDataChanged = (e: any) => {
+    onChange({ ...data, [e.dataField]: e.value });
+  };
 
-const RenderThongTinChung = ({ formData }: { formData: any }) => {
   return (
     <div>
       <div className="section-title">Thông tin chung</div>
       <Form
-        formData={formData}
+        formData={data}
         labelLocation="top"
         showColonAfterLabel={false}
+        onFieldDataChanged={handleFieldDataChanged}
         style={{ marginBottom: 20 }}
       >
         <GroupItem colCount={4}>
@@ -151,36 +138,37 @@ export default function TheoDoiCongTacKDDV({
   model,
   updateModel,
 }: {
-  runQuery: (query: any) => void;
+  runQuery?: (query: any) => void;
   model: Record<string, any>;
-  updateModel?: (payload: { body: Record<string, any> }) => void;
+  updateModel?: (payload: any) => void;
 }) {
-  const [formData, setFormData] = useState(EXAMPLE_DATA);
+  const tableKiemDichRef = useRef<any>(null);
+  const tableDiaChiNoiDenRef = useRef<any>(null);
 
-  const loaiDongVatData = model?.loaiDongVat || [
-    { id: 1, name: "Heo" },
-    { id: 2, name: "Gà" },
-    { id: 3, name: "Bò" },
-    { id: 4, name: "Trâu" },
-  ];
+  const loaiDongVatData = model?.action?.loaiDongVat || [];
+  const loaiMauData = model?.action?.loaiMau || [];
 
-  const loaiMauData = model?.loaiMau || [
-    { id: 1, name: "Mẫu 1" },
-    { id: 2, name: "Mẫu 2" },
-    { id: 3, name: "Mẫu 3" },
-    { id: 2, name: "Mẫu 4" },
-  ];
+  const [data, setData] = useState(model?.data || []);
 
-  const handleSave = () => runQuery(model.query);
+  const handleSave = () => {
+    const body = {
+      ...data,
+      kiemDichData: tableKiemDichRef.current.getData() || [],
+      diaChiNoiDenData: tableDiaChiNoiDenRef.current.getData() || [],
+    };
+    alert(JSON.stringify(body));
+
+    updateModel?.({ data: body });
+    runQuery?.(model.query);
+  };
 
   return (
-    <div style={{ backgroundColor: "#000", padding: 30 }}>
-      <RenderThongTinChung formData={formData} />
+    <div style={{ backgroundColor: "#fff", padding: 30 }}>
+      <RenderThongTinChung data={data} onChange={(data) => setData(data)} />
       <DynamicTable
+        ref={tableKiemDichRef}
         title="Danh sách mẫu kiểm dịch"
-        model={model}
-        fieldName="kiemDich"
-        updateModel={updateModel}
+        initData={data?.kiemDichData || []}
         addLabel="Thêm mẫu"
         columns={[
           {
@@ -195,15 +183,31 @@ export default function TheoDoiCongTacKDDV({
             type: "select",
             dataSource: loaiMauData,
           },
-          { dataField: "soLuong", caption: "Số lượng (*)", type: "number" },
-          { dataField: "file", caption: "Tệp đính kèm", type: "file" },
+          {
+            dataField: "soLuong",
+            caption: "Số lượng (*)",
+            type: "number",
+            validationRules: [
+              { type: "required", message: "Số lượng là bắt buộc" },
+              {
+                type: "range",
+                min: 0,
+                message: "Số lượng phải lớn hơn 0",
+              },
+            ],
+          },
+          {
+            dataField: "file",
+            caption: "Tệp đính kèm",
+            type: "file",
+            multiple: true,
+          },
         ]}
       />
       <DynamicTable
+        ref={tableDiaChiNoiDenRef}
         title="Danh sách địa chỉ nơi đến"
-        model={model}
-        fieldName="diaChiNoiDen"
-        updateModel={updateModel}
+        initData={data?.diaChiNoiDenData || []}
         addLabel="Thêm địa chỉ"
         columns={[
           {
@@ -211,12 +215,16 @@ export default function TheoDoiCongTacKDDV({
             caption: "Địa chỉ nơi đến (*)",
             type: "text",
           },
+          { dataField: "daDangKy", caption: "Tên chủ trại", type: "checkbox" },
           { dataField: "tenChuTrai", caption: "Tên chủ trại", type: "text" },
           {
             dataField: "soDienThoai",
             caption: "Số điện thoại",
             type: "text",
           },
+          { dataField: "soLuong", caption: "Số lượng (*)", type: "number" },
+
+          { dataField: "file", caption: "Tệp đính kèm", type: "file" },
         ]}
       />
       <button

@@ -13,7 +13,7 @@ body {
 
 .section-title {
     font-weight: bold;
-    color: #ccc;
+    color: #000;
     margin-bottom: 8px;
     text-align: left;
 }
@@ -35,3 +35,8 @@ body {
     border-radius: 6px;
     cursor: pointer;
 }  
+
+/* Căn giữa tất cả nội dung trong ô (bao gồm text, select, input, file) */
+.dx-datagrid-rowsview .dx-row>td {
+    vertical-align: middle !important;
+}
