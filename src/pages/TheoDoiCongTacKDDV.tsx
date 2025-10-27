@@ -163,7 +163,7 @@ export default function TheoDoiCongTacKDDV({
   };
 
   return (
-    <div style={{ backgroundColor: "#fff", padding: 30 }}>
+    <div className="bg-white p-4">
       <RenderThongTinChung data={data} onChange={(data) => setData(data)} />
       <DynamicTable
         ref={tableKiemDichRef}
