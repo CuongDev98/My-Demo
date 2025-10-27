@@ -63,7 +63,7 @@ function App({
     <>
       <TheoDoiCongTacKDDV
         runQuery={runQuery}
-        model={model || mModel}
+        model={model}
         updateModel={updateModel}
       />
     </>

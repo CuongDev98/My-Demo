@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import "../assets/styles/TheoDoiCongTacKDDV.css";
 import { DynamicTable } from "../components";
 import { Form, GroupItem, SimpleItem } from "devextreme-react/form";
+import { useComposable } from "../components/hooks";
 
 const RenderThongTinChung = ({
   data,
@@ -133,22 +134,65 @@ const RenderThongTinChung = ({
   );
 };
 
-export default function TheoDoiCongTacKDDV({
-  runQuery,
-  model,
-  updateModel,
-}: {
-  runQuery?: (query: any) => void;
-  model: Record<string, any>;
-  updateModel?: (payload: any) => void;
-}) {
+const DATA = {
+  tenChuCoSo: "Ngo Viet Cuong",
+  soCmnd: "04458741521",
+  soDienThoai: "0977249785",
+  soGiayPhep: "",
+  tinhThanh: "",
+  xaPhuong: "",
+  thonAp: "",
+  diaChi: "",
+  maCoSo: "",
+  tenCoSo: "",
+  ngayCapGiayPhep: null,
+  tongSoNhaYen: "",
+  tongDienTich: "",
+  sanLuong: "",
+  ghiChu: "",
+  phuongDiaDiem: "",
+  diaChiDiaDiem: "",
+  viDo: 10.786793622305948,
+  kinhDo: 106.69344513965149,
+  kiemDichData: [
+    { loaiDongVat: 1, loaiMau: 2, soLuong: 0, file: [], id: 1761465910426 },
+  ],
+  diaChiNoiDenData: [],
+};
+
+const ACTION_DATA = {
+  loaiDongVat: [
+    { id: 1, name: "Heo" },
+    { id: 2, name: "Gà" },
+    { id: 3, name: "Bò" },
+    { id: 4, name: "Trâu" },
+  ],
+  loaiMau: [
+    { id: 1, name: "Mẫu 1" },
+    { id: 2, name: "Mẫu 2" },
+    { id: 3, name: "Mẫu 3" },
+    { id: 4, name: "Mẫu 4" },
+  ],
+};
+
+const MODEL = {
+  query: "queryAddMauKiemDich", //Truyền vào tên query đã lưu ở Composable
+  data: DATA, //Dữ liệu xử lý giữa Composable với React
+  action: ACTION_DATA, //Dữ liệu xử lý dataSource của field Select
+};
+
+export default function TheoDoiCongTacKDDV() {
+  const { model, updateModel, runQuery } = useComposable();
+
+  const [data, setData] = useState(MODEL.data);
+  console.log("🚀 ~ data1:", JSON.stringify(MODEL.action));
+
   const tableKiemDichRef = useRef<any>(null);
   const tableDiaChiNoiDenRef = useRef<any>(null);
 
-  const loaiDongVatData = model?.action?.loaiDongVat || [];
-  const loaiMauData = model?.action?.loaiMau || [];
-
-  const [data, setData] = useState({});
+  const loaiDongVatData =
+    model?.action?.loaiDongVat || MODEL.action.loaiDongVat;
+  const loaiMauData = model?.action?.loaiMau || MODEL.action.loaiMau;
 
   const handleSave = () => {
     const body = {
