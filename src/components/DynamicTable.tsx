@@ -28,14 +28,15 @@ interface DynamicTableProps {
   addLabel?: string;
 }
 
-// DynamicTable dùng forwardRef để component cha có thể gọi getData()
+// DynamicTable dùng forwardRef để quản lý và xử lý dữ liệu độc lập bên trong bảng -> Không ảnh hưởng tới component cha
 const DynamicTable = forwardRef<any, DynamicTableProps>(
   ({ title, initData, columns, addLabel = "Thêm dòng" }, ref) => {
     // State lưu dữ liệu bảng
-    const [data, setData] = useState<any[]>(initData);
+    const [data, setData] = useState<any[]>([...initData]);
 
+    // Expose hàm getData ra bên ngoài thông qua ref -> // giúp component cha có thể lấy dữ liệu hiện tại trong bảng khi cần
     useImperativeHandle(ref, () => ({
-      getData: () => data, // DataGrid tự update trực tiếp object, nên data luôn là dữ liệu mới
+      getData: () => data,
     }));
 
     const updateData = (newData: any[]) => {
@@ -178,6 +179,13 @@ const DynamicTable = forwardRef<any, DynamicTableProps>(
                 e.component.closeEditCell();
               };
             }
+          }}
+          onRowUpdated={(e) => {
+            setData((prev) =>
+              prev.map((item) =>
+                item.id === e.key ? { ...item, ...e.data } : item
+              )
+            );
           }}
         >
           <Column

@@ -2,6 +2,11 @@ body {
     padding: 10px;
 }
 
+.label-field {
+    font-weight: 600;
+    font-size: 14px;
+    padding-right: 5px;
+}
 
 .dx-datagrid {
     height: auto;
@@ -40,3 +45,34 @@ body {
 .dx-datagrid-rowsview .dx-row>td {
     vertical-align: middle !important;
 }
+/* Ẩn nút "Revert"(undo) trên DataGrid của DevExtreme. */
+.dx-revert-button {
+    display: none !important;
+}
+
+.custom-select select {
+    width: 100%;
+    border: none;
+    background: none;
+    color: #999999;
+    font-size: 14px;
+}
+
+.my-custom-input .dx-textbox {
+    border: 2px solid #eee;
+    border-radius: 4px;
+}
+
+/* Khi focus */
+.my-custom-input .dx-textbox.dx-state-focused {
+    border: 2px solid #007000;
+    /* viền xanh lá đậm khi focus */
+    /* box-shadow: 0 0 0 2px rgba(0, 112, 0, 0.2); */
+    /* glow nhẹ */
+}
+
+/* Khi invalid */
+.my-custom-input .dx-textbox.dx-invalid {
+    border-color: red;
+}
+
