@@ -133,7 +133,7 @@ const RenderThongTinChung = ({
   );
 };
 
-export default function TheoDoiCongTacKDDV({
+export const TheoDoiCongTacKDDV = ({
   runQuery,
   model,
   updateModel,
@@ -141,7 +141,7 @@ export default function TheoDoiCongTacKDDV({
   runQuery?: (query: any) => void;
   model: Record<string, any>;
   updateModel?: (payload: any) => void;
-}) {
+}) => {
   const tableKiemDichRef = useRef<any>(null);
   const tableDiaChiNoiDenRef = useRef<any>(null);
 

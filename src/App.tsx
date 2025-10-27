@@ -1,6 +1,6 @@
 import "./App.css";
 import "devextreme/dist/css/dx.light.css";
-import TheoDoiCongTacKDDV from "./pages/TheoDoiCongTacKDDV";
+import {TheoDoiCongTacKDDV} from "./pages/TheoDoiCongTacKDDV";
 
 const DATA = {
   tenChuCoSo: "",
