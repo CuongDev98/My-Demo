@@ -23,7 +23,7 @@ export interface DynamicColumn {
 
 interface DynamicTableProps {
   title?: string;
-  initData: any[];
+  initData?: any[];
   columns: DynamicColumn[];
   addLabel?: string;
 }
@@ -32,7 +32,7 @@ interface DynamicTableProps {
 const DynamicTable = forwardRef<any, DynamicTableProps>(
   ({ title, initData, columns, addLabel = "Thêm dòng" }, ref) => {
     // State lưu dữ liệu bảng
-    const [data, setData] = useState<any[]>([...initData]);
+    const [data, setData] = useState<any[]>([...(initData || [])]);
 
     // Expose hàm getData ra bên ngoài thông qua ref -> // giúp component cha có thể lấy dữ liệu hiện tại trong bảng khi cần
     useImperativeHandle(ref, () => ({
