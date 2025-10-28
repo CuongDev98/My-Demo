@@ -1,7 +1,5 @@
 import "./App.css";
 import "devextreme/dist/css/dx.light.css";
-import { ProductionBusinessTable } from "../features/PlantVarietiesManagement/ProductionBusinessManagement/ProductionBusinessTable.tsx";
-import { ProductionBusinessMasterDetail } from "../features/PlantVarietiesManagement/ProductionBusinessManagement/ProductionBusinessMasterDetail.tsx";
 import { TheoDoiCongTacKDDV } from "../pages/TheoDoiCongTacKDDV.tsx";
 
 const users = [
@@ -255,7 +253,15 @@ const ACTION_DATA = {
   ],
 };
 
-function App() {
+function App({
+  runQuery,
+  model,
+  updateModel,
+}: {
+  runQuery?: (query: any) => void;
+  model: Record<string, any>;
+  updateModel?: (payload: any) => void;
+}) {
   //Dữ liệu model truyền ở Composable sẽ theo dạng này gồm "query" và "data"
   const mModel = {
     query: "query1", //Truyền vào tên query đã lưu ở Composable
@@ -263,35 +269,13 @@ function App() {
     action: ACTION_DATA, //Dữ liệu xử lý dataSource của field Select
   };
 
-  const handleRunQuery = () => {
-    console.log("handle run query");
-  };
-
-  const handleUpdateModal = () => {
-    console.log("handle update modal");
-  };
-
-  const mModel2 = {
-    query: "query2", //Truyền vào tên query đã lưu ở Composable
-    data: mockData2, //Dữ liệu xử lý giữa Composable với React
-    action: ACTION_DATA, //Dữ liệu xử lý dataSource của field Select
-  };
-
-  const handleRunQuery2 = () => {
-    console.log("handle run query 2");
-  };
-
-  const handleUpdateModal2 = () => {
-    console.log("handle update modal 2");
-  };
-
   return (
     <>
       <div className="flex flex-col gap-6">
         <TheoDoiCongTacKDDV
-          runQuery={handleRunQuery2}
-          model={mModel2}
-          updateModel={handleUpdateModal2}
+          runQuery={runQuery}
+          model={model}
+          updateModel={updateModel}
         />
       </div>
     </>

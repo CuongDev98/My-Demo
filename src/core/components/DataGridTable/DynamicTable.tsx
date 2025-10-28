@@ -178,11 +178,7 @@ const DynamicTable = forwardRef<any, DynamicTableProps>(
               )}
               cellRender={({ value }) => {
                 if (!value || (Array.isArray(value) && value.length === 0))
-                  return (
-                    <span style={{ color: "#aaa" }}>
-                      Chưa có tệp nào được chọn
-                    </span>
-                  );
+                  return <span style={{ color: "#aaa" }}>Chọn tệp</span>;
 
                 const files = Array.isArray(value) ? value : [value];
                 return (
