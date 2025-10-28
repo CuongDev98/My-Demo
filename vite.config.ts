@@ -8,7 +8,7 @@ export default defineConfig({
         lib: {
             entry: path.resolve(__dirname, 'src/index.ts'),
             name: 'MFECore',
-            fileName: () => 'mfe-core-0.2.umd.js',
+            fileName: () => 'mfe-core-0.3.umd.js',
             formats: ['umd'],
         },
         outDir: 'dist-umd',

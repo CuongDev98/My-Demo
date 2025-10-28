@@ -1,6 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import {DataGridComponent} from "./DataGridComponent/DataGridComponent.tsx";
-import {CoSoNuoiYenPage} from "./page/CoSoNuoiYenPage.tsx";
+import {
+    ProductionBusinessTable
+} from "./features/PlantVarietiesManagement/ProductionBusinessManagement/ProductionBusinessTable.tsx";
+import {
+    ProductionBusinessMasterDetail
+} from "./features/PlantVarietiesManagement/ProductionBusinessManagement/ProductionBusinessMasterDetail.tsx";
 
-export {React, ReactDOM, DataGridComponent, CoSoNuoiYenPage};
+export {React, ReactDOM, ProductionBusinessTable, ProductionBusinessMasterDetail};
