@@ -64,7 +64,6 @@ export const ProductionBusinessMasterDetail = ({runQuery, model, updateModel}: {
                     dataSource={model?.data}
                     columns={columns}
                     masterDetailTemplate={(rowData: any) => {
-                        console.log("rowData", rowData);
                         return (
                             <DataGridTable dataSource={rowData?.data?.thongTinGiongDtoList}
                                            columns={masterDetailColumns}/>
