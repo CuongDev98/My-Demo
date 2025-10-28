@@ -76,3 +76,6 @@ body {
     border-color: red;
 }
 
+.dx-datagrid-rowsview .dx-command-expand {
+    padding: 0 !important;
+}

@@ -3,8 +3,8 @@ const BASE_URL = "https://api.example.com";
 
 //Khai báo các api xử lý ở đây
 //GET
-export const getListKiemDich = async (params: any) => {
-  const url = BASE_URL;
+export const getListKiemDich = async (params: any, id: any) => {
+  const url = `${BASE_URL}/${id}`;
   return axiosClient.get(url, { params });
 };
 //POST

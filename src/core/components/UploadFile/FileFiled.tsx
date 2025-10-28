@@ -60,7 +60,7 @@ const FileField: React.FC<FileFieldProps> = ({
         style={{
           backgroundColor: "#007000",
           color: "white",
-          padding: "4px 10px",
+          padding: "5px 10px",
           borderRadius: 4,
           cursor: "pointer",
           fontSize: 13,
@@ -72,9 +72,30 @@ const FileField: React.FC<FileFieldProps> = ({
 
       {/* danh sách file */}
       {hasFiles && (
-        <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 2,
+            maxWidth: "calc(100% - 80px)", // ✅ giữ không tràn ra khỏi khung
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+          }}
+          title={displayFiles.join(", ")} // hover hiển thị đầy đủ tên file
+        >
           {displayFiles.map((name, index) => (
-            <span key={index} style={{ fontSize: 13, color: "#333" }}>
+            <span
+              key={index}
+              style={{
+                fontSize: 13,
+                color: "#333",
+                textOverflow: "ellipsis",
+                overflow: "hidden",
+                whiteSpace: "nowrap",
+                display: "block",
+              }}
+            >
               {name}
             </span>
           ))}

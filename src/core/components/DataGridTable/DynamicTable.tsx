@@ -4,10 +4,11 @@ import DataGrid, {
   Lookup,
   Paging,
   Pager,
+  MasterDetail,
 } from "devextreme-react/data-grid";
 import "devextreme/dist/css/dx.light.css";
-import "../assets/styles/TheoDoiCongTacKDDV.css";
-import FileField from "./forms/FileField";
+import FileField from "../UploadFile/FileFiled";
+
 export interface DynamicColumn {
   dataField: string;
   caption: string;
@@ -23,25 +24,42 @@ export interface DynamicColumn {
 
 interface DynamicTableProps {
   title?: string;
-  initData?: any[];
+  dataSource: any[];
   columns: DynamicColumn[];
   addLabel?: string;
+  showIndex?: boolean;
+  actionsData?: ("edit" | "add" | "info" | "delete")[];
+  masterDetailTemplate?: (rowData: any) => React.ReactNode;
+  onEditAction?: (item: any) => void;
+  onAddAction?: (item?: any) => void;
+  onInfoAction?: (item: any) => void;
+  onDeleteAction?: (item: any) => void;
 }
 
-// DynamicTable dùng forwardRef để quản lý và xử lý dữ liệu độc lập bên trong bảng -> Không ảnh hưởng tới component cha
 const DynamicTable = forwardRef<any, DynamicTableProps>(
-  ({ title, initData, columns, addLabel = "Thêm dòng" }, ref) => {
-    // State lưu dữ liệu bảng
-    const [data, setData] = useState<any[]>([...(initData || [])]);
+  (
+    {
+      title,
+      dataSource,
+      columns,
+      addLabel,
+      showIndex = true,
+      actionsData = [],
+      masterDetailTemplate,
+      onEditAction,
+      onAddAction,
+      onInfoAction,
+      onDeleteAction,
+    },
+    ref
+  ) => {
+    const [data, setData] = useState<any[]>([...dataSource]);
 
-    // Expose hàm getData ra bên ngoài thông qua ref -> // giúp component cha có thể lấy dữ liệu hiện tại trong bảng khi cần
     useImperativeHandle(ref, () => ({
       getData: () => data,
     }));
 
-    const updateData = (newData: any[]) => {
-      setData(newData);
-    };
+    const updateData = (newData: any[]) => setData(newData);
 
     const handleAdd = () => {
       const newItem = Object.fromEntries(
@@ -56,10 +74,53 @@ const DynamicTable = forwardRef<any, DynamicTableProps>(
       );
       newItem.id = Date.now();
       updateData([...data, newItem]);
+      onAddAction?.(newItem);
     };
 
-    const handleDelete = (id: number) =>
-      updateData(data.filter((x) => x.id !== id));
+    const handleDelete = (id: number) => {
+      const deletedItem = data.find((x) => x.id === id);
+      const newData = data.filter((x) => x.id !== id);
+      updateData(newData);
+      onDeleteAction?.(deletedItem);
+    };
+
+    const handleEdit = (item: any) => onEditAction?.(item);
+    const handleInfo = (item: any) => onInfoAction?.(item);
+
+    const ACTION_ICONS: Record<
+      string,
+      {
+        icon: string;
+        color: string;
+        title: string;
+        onClick: (item: any) => void;
+      }
+    > = {
+      edit: {
+        icon: "dx-icon-edit",
+        color: "#2563eb",
+        title: "Sửa",
+        onClick: handleEdit,
+      },
+      add: {
+        icon: "dx-icon-add",
+        color: "#16a34a",
+        title: "Thêm",
+        onClick: handleAdd,
+      },
+      info: {
+        icon: "dx-icon-info",
+        color: "#0ea5e9",
+        title: "Xem chi tiết",
+        onClick: handleInfo,
+      },
+      delete: {
+        icon: "dx-icon-trash",
+        color: "#dc2626",
+        title: "Xóa",
+        onClick: (item) => handleDelete(item.id),
+      },
+    };
 
     const renderColumn = (col: DynamicColumn) => {
       const baseProps = {
@@ -77,8 +138,10 @@ const DynamicTable = forwardRef<any, DynamicTableProps>(
       switch (col.type) {
         case "number":
           return <Column {...baseProps} dataType="number" />;
+
         case "checkbox":
           return <Column {...baseProps} dataType="boolean" />;
+
         case "select":
           return (
             <Column
@@ -100,6 +163,7 @@ const DynamicTable = forwardRef<any, DynamicTableProps>(
               />
             </Column>
           );
+
         case "file":
           return (
             <Column
@@ -123,7 +187,11 @@ const DynamicTable = forwardRef<any, DynamicTableProps>(
                 const files = Array.isArray(value) ? value : [value];
                 return (
                   <div
-                    style={{ display: "flex", flexDirection: "column", gap: 2 }}
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 2,
+                    }}
                   >
                     {files.map((name: string, idx: number) => (
                       <a key={idx} href="#" onClick={(e) => e.preventDefault()}>
@@ -135,6 +203,7 @@ const DynamicTable = forwardRef<any, DynamicTableProps>(
               }}
             />
           );
+
         default:
           return <Column {...baseProps} dataType="string" />;
       }
@@ -188,43 +257,68 @@ const DynamicTable = forwardRef<any, DynamicTableProps>(
             );
           }}
         >
-          <Column
-            caption="STT"
-            width={60}
-            alignment="center"
-            allowSorting={false}
-            allowFiltering={false}
-            cellRender={({ rowIndex }) => rowIndex + 1}
-          />
+          {showIndex && (
+            <Column
+              caption="STT"
+              width={60}
+              alignment="center"
+              allowSorting={false}
+              allowFiltering={false}
+              cellRender={({ rowIndex }) => rowIndex + 1}
+            />
+          )}
 
           {columns.map(renderColumn)}
 
-          <Column
-            caption="Thao tác"
-            width={100}
-            alignment="center"
-            cellRender={({ data }) => (
-              <button
-                className="dx-button dx-button-danger"
-                onClick={() => handleDelete(data.id)}
-              >
-                Xóa
-              </button>
-            )}
+          {actionsData?.length > 0 && (
+            <Column
+              caption="Thao tác"
+              width={120}
+              alignment="center"
+              allowSorting={false}
+              allowFiltering={false}
+              cellRender={({ data }) => (
+                <div className="flex justify-center items-center gap-2">
+                  {actionsData.map((key) => {
+                    const act = ACTION_ICONS[key];
+                    if (!act) return null;
+                    return (
+                      <i
+                        key={key}
+                        className={act.icon}
+                        title={act.title}
+                        style={{
+                          fontSize: 18,
+                          color: act.color,
+                          cursor: "pointer",
+                        }}
+                        onClick={() => act.onClick(data)}
+                      ></i>
+                    );
+                  })}
+                </div>
+              )}
+            />
+          )}
+
+          <MasterDetail
+            enabled={!!masterDetailTemplate}
+            component={({ data }) => masterDetailTemplate?.(data)}
           />
 
           <Paging defaultPageSize={5} />
           <Pager showInfo showPageSizeSelector allowedPageSizes={[5, 10, 20]} />
         </DataGrid>
-
-        <div className="add-button-container">
-          <button
-            onClick={handleAdd}
-            className="dx-button dx-button-mode-contained dx-button-success dx-widget dx-button-has-text"
-          >
-            <span className="dx-button-text">+ {addLabel}</span>
-          </button>
-        </div>
+        {addLabel && (
+          <div className="add-button-container">
+            <button
+              onClick={handleAdd}
+              className="dx-button dx-button-mode-contained dx-button-success dx-widget dx-button-has-text"
+            >
+              <span className="dx-button-text">+ {addLabel}</span>
+            </button>
+          </div>
+        )}
       </div>
     );
   }

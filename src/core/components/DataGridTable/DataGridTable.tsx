@@ -3,18 +3,17 @@ import {
     DataGrid,
     Column,
     Paging,
-    Pager,
-    Selection,
+    Pager, MasterDetail,
 } from "devextreme-react/data-grid";
 
-interface BaseDataGridProps {
+interface DataGridProps {
     dataSource: any[];
     columns: {
         dataField: string;
         caption?: string;
         width?: number;
         cellRender?: any;
-        editCellTemplate?: any; // Corrected from editCellRender
+        editCellTemplate?: any;
         headerCellRender?: any;
         allowEditing?: boolean;
     }[];
@@ -22,24 +21,23 @@ interface BaseDataGridProps {
     height?: number | string;
     pageSize?: number;
     showIndex?: boolean;
-    selectionMode?: "none" | "single" | "multiple";
     onRowClick?: (e: any) => void;
-    toolbarExtra?: React.ReactNode;
-    allowEditing?: boolean; // Added to toggle editing
+    masterDetailTemplate?: (rowData: any) => React.ReactNode
 }
 
-const BaseDataGrid: React.FC<BaseDataGridProps> = ({
-                                                       dataSource,
-                                                       columns,
-                                                       keyExpr = "id",
-                                                       height,
-                                                       pageSize = 10,
-                                                       showIndex = true,
-                                                       selectionMode = "none",
-                                                       onRowClick,
-                                                   }) => {
+const DataGridTable: React.FC<DataGridProps> = ({
+                                                    dataSource,
+                                                    columns,
+                                                    keyExpr = "id",
+                                                    height,
+                                                    pageSize = 10,
+                                                    showIndex = true,
+                                                    onRowClick,
+                                                    masterDetailTemplate
+                                                }) => {
     return (
         <DataGrid
+            className="w-full"
             dataSource={dataSource}
             keyExpr={keyExpr}
             showBorders={true}
@@ -49,25 +47,25 @@ const BaseDataGrid: React.FC<BaseDataGridProps> = ({
             onRowClick={onRowClick}
             allowColumnResizing={true}
             allowColumnReordering={true}
-            onCellPrepared={(e) => {
+            onCellPrepared={e => {
                 if (e.rowType === "header") {
-                    e.cellElement.style.background = "#007000";
-                    e.cellElement.style.color = "white";
-                    e.cellElement.style.fontWeight = "600";
+                    e.cellElement.classList.add(
+                        "bg-green-700",
+                        "text-white",
+                        "font-semibold",
+                        "!text-center",
+                        "!py-4"
+                    );
                 }
             }}
+            // masterDetail={{
+            //     enabled: !!masterDetailTemplate,
+            //     template: (temp: any) => {
+            //         console.log("temp", temp);
+            //         return masterDetailTemplate ? masterDetailTemplate(temp?.data) : null
+            //     }
+            // }}
         >
-            <Selection mode={selectionMode}/>
-            {/*{allowEditing && (*/}
-            {/*    <Editing*/}
-            {/*        mode="cell"*/}
-            {/*        allowUpdating={true}*/}
-            {/*    />*/}
-            {/*)}*/}
-
-            {/*<SearchPanel visible={true} highlightCaseSensitive={false} />*/}
-            {/*<FilterRow visible={true} />*/}
-
             {showIndex && (
                 <Column
                     caption="STT"
@@ -88,10 +86,15 @@ const BaseDataGrid: React.FC<BaseDataGridProps> = ({
                 />
             ))}
 
+            <MasterDetail
+                enabled={!!masterDetailTemplate}
+                component={({data}) => masterDetailTemplate?.(data)}
+            />
+
             <Paging defaultPageSize={pageSize}/>
             <Pager showInfo={true} showPageSizeSelector={true}/>
         </DataGrid>
     );
 };
 
-export default BaseDataGrid;
+export default DataGridTable;

@@ -18,7 +18,9 @@
     "devextreme": "^25.1.5",
     "devextreme-react": "^25.1.5",
     "jquery": "^3.7.1",
-    "react": "^18.2.0",
+    "lucide": "^0.548.0",
+    "lucide-react": "^0.548.0",
+    "react": "^18.3.1",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.65.0",
     "react-router-dom": "^7.9.4"
