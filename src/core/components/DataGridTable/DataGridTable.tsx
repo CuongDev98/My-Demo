@@ -5,6 +5,7 @@ import {
     Paging,
     Pager, MasterDetail,
 } from "devextreme-react/data-grid";
+import {Trash2, SquarePen, Info} from 'lucide-react';
 
 interface DataGridProps {
     dataSource: any[];
@@ -16,6 +17,7 @@ interface DataGridProps {
         editCellTemplate?: any;
         headerCellRender?: any;
         allowEditing?: boolean;
+        listOperation?: string[];
     }[];
     keyExpr?: string;
     height?: number | string;
@@ -23,6 +25,7 @@ interface DataGridProps {
     showIndex?: boolean;
     onRowClick?: (e: any) => void;
     masterDetailTemplate?: (rowData: any) => React.ReactNode
+    handleOperationClick?: (type: string) => void;
 }
 
 const DataGridTable: React.FC<DataGridProps> = ({
@@ -33,11 +36,18 @@ const DataGridTable: React.FC<DataGridProps> = ({
                                                     pageSize = 10,
                                                     showIndex = true,
                                                     onRowClick,
-                                                    masterDetailTemplate
+                                                    masterDetailTemplate,
+                                                    handleOperationClick,
                                                 }) => {
+
+    const handleClickOperation = (type: string) => {
+        if (handleOperationClick) {
+            handleOperationClick(type)
+        }
+    }
+
     return (
         <DataGrid
-            className="w-full"
             dataSource={dataSource}
             keyExpr={keyExpr}
             showBorders={true}
@@ -76,14 +86,64 @@ const DataGridTable: React.FC<DataGridProps> = ({
             )}
 
             {columns.map((col) => (
-                <Column
-                    key={col.dataField}
-                    {...col}
-                    allowEditing={col.allowEditing}
-                    cellRender={col.cellRender}
-                    editCellTemplate={col.editCellTemplate}
-                    headerCellRender={col.headerCellRender}
-                />
+                col?.listOperation ? (
+                    <Column
+                        caption="Thao tác"
+                        width={50 * col?.listOperation?.length}
+                        alignment="center"
+                        cellRender={(cellData) => (
+                            <div className="flex items-center justify-center gap-2">
+                                {col?.listOperation?.map((operation) => {
+                                    switch (operation) {
+                                        case "edit":
+                                            return (
+                                                <div key="edit">
+                                                    <SquarePen
+                                                        onClick={() => {
+                                                            handleClickOperation("edit")
+                                                        }}
+                                                        width={20}
+                                                        className="bg-transparent hover:bg-transparent text-blue-600 hover:text-green-600 cursor-pointer"
+                                                    />
+                                                </div>
+                                            );
+                                        case "delete":
+                                            return (
+                                                <div key="delete">
+                                                    <Trash2
+                                                        onClick={() => handleClickOperation("delete")}
+                                                        width={20}
+                                                        className="bg-transparent hover:bg-transparent text-blue-600 hover:text-red-600 cursor-pointer"
+                                                    />
+                                                </div>
+                                            );
+                                        case "info":
+                                            return (
+                                                <div key="info">
+                                                    <Info
+                                                        onClick={() => handleClickOperation("info")}
+                                                        width={20}
+                                                        className="bg-transparent hover:bg-transparent text-blue-600 hover:text-green-600 cursor-pointer"
+                                                    />
+                                                </div>
+                                            );
+                                        default:
+                                            return null;
+                                    }
+                                })}
+                            </div>
+                        )}
+                    />
+                ) : (
+                    <Column
+                        key={col.dataField}
+                        {...col}
+                        allowEditing={col.allowEditing}
+                        cellRender={col.cellRender}
+                        editCellTemplate={col.editCellTemplate}
+                        headerCellRender={col.headerCellRender}
+                    />
+                )
             ))}
 
             <MasterDetail

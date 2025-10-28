@@ -32,6 +32,11 @@ export const ProductionBusinessMasterDetail = ({runQuery, model, updateModel}: {
             caption: "Tỉnh/Thành phố",
             width: 300,
         },
+        {
+            dataField: "operation",
+            caption: "Thao tác",
+            listOperation: ["info", "edit", "delete"]
+        }
     ];
 
     const masterDetailColumns = [
@@ -57,6 +62,22 @@ export const ProductionBusinessMasterDetail = ({runQuery, model, updateModel}: {
         },
     ];
 
+    const operationClick = (type: string) => {
+        switch (type) {
+            case "info":
+                console.log("info Click")
+                return
+            case "edit":
+                console.log("edit Click")
+                return
+            case "delete":
+                console.log("delete Click")
+                return
+            default:
+                break
+        }
+    }
+
     return (
         <div>
             <form>
@@ -64,12 +85,12 @@ export const ProductionBusinessMasterDetail = ({runQuery, model, updateModel}: {
                     dataSource={model?.data}
                     columns={columns}
                     masterDetailTemplate={(rowData: any) => {
-                        console.log("rowData", rowData);
                         return (
                             <DataGridTable dataSource={rowData?.data?.thongTinGiongDtoList}
                                            columns={masterDetailColumns}/>
                         )
                     }}
+                    handleOperationClick={operationClick}
                 />
             </form>
         </div>
