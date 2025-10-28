@@ -212,7 +212,7 @@ export const TheoDoiCongTacKDDV = ({
   const loaiMauData = model?.action?.loaiMau || ACTION_DATA.loaiMau;
 
   const [data, setData] = useState(model?.data || {}); // State lưu thông tin form
-  const [filterValues, setFilterValues] = useState({}); // State filter (nếu cần lọc dữ liệu)
+  const [filterValues, setFilterValues] = useState({}); // State filter (nếu cần lọc dữ liệu1)
 
   // Khi filter thay đổi thì gọi API lấy chi tiết
   useEffect(() => {
