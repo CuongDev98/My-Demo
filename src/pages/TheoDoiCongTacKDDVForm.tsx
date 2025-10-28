@@ -134,7 +134,7 @@ const RenderThongTinChung = ({
   );
 };
 
-export default function TheoDoiCongTacKDDV() {
+export default function TheoDoiCongTacKDDVForm() {
   const { model, updateModel, runQuery } = useComposable();
 
   const [data, setData] = useState({});
