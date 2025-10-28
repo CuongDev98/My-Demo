@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { Form, GroupItem, SimpleItem } from "devextreme-react/form";
 import "../assets/styles/TheoDoiCongTacKDDV.css";
-import { useComposable } from "../hooks";
+import { useComposable, useFetchApi } from "../hooks";
 import { DynamicTable } from "../components";
 
 const RenderThongTinChung = ({
@@ -151,6 +151,7 @@ export default function TheoDoiCongTacKDDVForm() {
       kiemDichData: tableKiemDichRef.current.getData() || [],
       diaChiNoiDenData: tableDiaChiNoiDenRef.current.getData() || [],
     };
+
     // Giả lập API call
     try {
       const postApi = async (body: any) => {

@@ -148,7 +148,7 @@ export default function TheoDoiCongTacKDDV({
   const loaiDongVatData = model?.action?.loaiDongVat || [];
   const loaiMauData = model?.action?.loaiMau || [];
 
-  const [data, setData] = useState({});
+  const [data, setData] = useState(model?.data || {});
 
   const handleSave = () => {
     const body = {
